@@ -1,0 +1,47 @@
+body {
+    font-family: 'Space Mono', monospace;
+    background-color: #2d5b6b;
+}
+
+main {
+    padding: 0 20%;
+}
+
+header {
+    padding: 0 10%;
+}
+
+p {
+    margin: 0;
+    padding: 0;
+    line-height: 120%;
+    font-size: 1.5vw;
+    color: white;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+    font-size: 1vw;
+    margin: 0px 10px 0px 10px;
+}
+
+.introduction {
+    width: 60%;
+    margin: 5% auto 5% auto;
+}
+
+.introduction .content{
+    width: fit-content;
+    margin: 0px auto 0px auto;
+}
+
+.name {
+    font-size: 3vw ;
+    font-weight: 500;
+}
+
+.fullstack {
+    margin: 0px 0 0px auto;
+    width: fit-content;
+}
