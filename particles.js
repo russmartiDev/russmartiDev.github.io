@@ -6,7 +6,7 @@ window.requestAnimFrame = (function(){
 		  window.oRequestAnimationFrame      || 
 		  window.msRequestAnimationFrame     ||  
 		  function( callback ){
-			window.setTimeout(callback, 1000 / 120);
+			window.setTimeout(callback, 1000 /120);
 		  };
 })();
 
@@ -24,9 +24,9 @@ canvas.width = W;
 canvas.height = H;
 
 // Some variables for later use
-var particleCount = 100,
+var particleCount = 110,
 	particles = [],
-	minDist = 70,
+	minDist = 110,
 	dist;
 
 // Function to paint the canvas black
@@ -178,8 +178,8 @@ function distance(p1, p2) {
 		
 		// Some acceleration for the partcles 
 		// depending upon their distance
-		var ax = dx/2000,
-			ay = dy/2000;
+		var ax = dx/1000000,
+			ay = dy/1000000;
 		
 		// Apply the acceleration on the particles
 		p1.vx -= ax;
