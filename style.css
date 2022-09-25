@@ -112,6 +112,7 @@ p {
 
 .sectionTitle {
     margin-bottom: 3%;
+    font-size: 2vw;
 }
 
 .sectionTitle span {
@@ -192,4 +193,76 @@ canvas {
 }
 #skills {
     background-color: #120e23;
+    position: relative;
+}
+
+#skills .content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+#skills li {
+    list-style-type: none;
+    margin: 1% 0;
+    padding: 0;
+    display: inline-block;
+    width: auto;
+    border: 1px solid white;
+    padding: 10px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+
+
+#skills li p{
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 1vw;
+}
+
+#skills li img{
+    width: 2vw;
+    vertical-align: middle;
+    border-radius: 15%;
+}
+
+#skills .colorFilter li{
+    display: inline-block;
+    margin: .5% 0.9%;
+    color: white;
+    padding: .8%;
+}
+
+#skills .colorFilter li * {
+    vertical-align: middle;
+}
+
+#skills .colorFilter li p {
+    font-size: .9vw;
+    margin-left: .5vw;
+}
+
+#skills .colorFilter ul{
+    color: white;
+    padding: 0;
+    border: 0;
+    text-align: center;
+    display: flex;  
+    flex-wrap: wrap;
+}
+
+#skills ul {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+}
+
+#skills li{
+    width: max-content;
+    margin-inline: 0.9%;
+    flex-grow: 2;
 }
