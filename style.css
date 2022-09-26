@@ -45,7 +45,6 @@ nav {
 .logo{
     width: 2rem;
     height: auto;
-
 }
 
 a {
@@ -96,23 +95,33 @@ p {
     margin-inline: auto;
     vertical-align: middle;
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
 #home .links {
-    display: flex;
+    position: absolute;
+    display: inline-block;
     justify-content: center;
     width: fit-content;
     margin: 10% auto 0 auto;
 }
+
 #home .links img {
     width: 10%;
     margin-inline: 5%;
-    border-radius: 15%;
+    border-radius: 20%;
     padding: 10px;
+    cursor: pointer;
+    vertical-align: middle;
+    transition: .5s;
 }
-
+#home .links img:hover {
+    width: 12%;
+    border-radius: 15%;
+    transition: .5s;
+}
 .fullstack {
     margin: 0px 0 0px auto;
     width: fit-content;
@@ -301,9 +310,10 @@ canvas {
     width: max-content;
     margin-inline: 0.9%;
     flex-grow: 2;
+    transition: .3s;
 }
 
-#skills li:hover{
+#skills .skillBlocks li:hover{
     background-color: #718bff;
     flex-grow: 4;
     transition: .3s;
