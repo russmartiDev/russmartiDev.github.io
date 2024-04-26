@@ -2,123 +2,88 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@100;400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="checkbox.css">
-    <link rel="stylesheet" href="style.css">
     <title>Russell Martinez</title>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');</style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="/games.js"></script>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
-    <header>
-        <div>
-            <img src="logo.webp"  class="logo" alt="" srcset="">
+    <div class="w-full h-[100vh] text-amber-300 text-center relative overflow-hidden flex items-center bg-gradient-to-b from-blue-600 from-20% to-sky-400">
+        <div class="block w-full title">
+            <h1 class="font-extrabold text-9xl stroke-2">Russell Martinez</h1>
+            <p class="text-7xl stroke-1">Full-stack Developer</p>
         </div>
-        <div>
-
-            <a>russell.martinez.dev@gmail.com</a>
-        </div>
-        <div class="nav">
-            <nav>
-                <a href="#home">Home</a>
-                <a href="#about">About</a>
-                <a href="#skills">Skills</a>
-                <a href="#">Experience</a>
-                <a href="#">Works</a>
-            </nav>
-        </div>
-
-    </header>
-    <main>
-        <section id ="home">
-            <div>
-                <div class="content">
-                    <div style="position: relative;">
-                        <p>Hi, my name is</p>
-                        <p class="name">Russell Martinez</p>
-                        <p class="fullstack">Fullstack Developer</p>
-                    </div>
-
-                    
-                    <div class="links">
-                        <img src="linkedInLogo.png" alt="" srcset="">
-                        <img src="github.png" alt="" srcset="">
-                        <img src="facebook.png"  alt="" srcset="">
-                        <img src="gmail.webp" alt="" srcset="">
-                    </div>
-                </div>
+        <img src="/images/Cloud2.png" class="clouds cloud1 w-[20vw] h-auto absolute top-[10vh]">
+        <img src="/images/Cloud4.png" class="clouds cloud2 w-[10vw] h-auto absolute top-[30vh]">
+        <img src="/images/Cloud1.png" class="clouds cloud3 w-[30vw] h-auto absolute top-[50vh]">
+        <img src="/images/Cloud3.png" class="clouds cloud4 w-[20vw] h-auto absolute top-[80vh]">
+    </div>
+    <div class="w-full h-[100vh] text-amber-300 relative overflow-hidden bg-sky-400 flex items-center p-5 ">
+            <div class="block w-full text-center title2">
+                <h1 class="font-extrabold text-9xl stroke-2">Projects</h1>
+                <p class="text-7xl stroke-1 group hover:text-white cursor-pointer inline-block w-full"><img src="/images/arrow.png" class="w-12 h-12 mr-5 fill-amber-300 hidden group-hover:inline-block ">ORBSetups</p>
+                <p class="text-7xl stroke-1 group hover:text-white cursor-pointer inline-block w-full"><img src="/images/arrow.png" class="w-12 h-12 mr-5 fill-amber-300 hidden group-hover:inline-block ">ShillCharts</p>
+                <p class="text-7xl stroke-1 group hover:text-white cursor-pointer inline-block w-full"><img src="/images/arrow.png" class="w-12 h-12 mr-5 fill-amber-300 hidden group-hover:inline-block ">Duhtools</p>
+                <p class="text-7xl stroke-1 group hover:text-white cursor-pointer inline-block w-full"><img src="/images/arrow.png" class="w-12 h-12 mr-5 fill-amber-300 hidden group-hover:inline-block ">OpenPixels</p>
+                <p class="text-7xl stroke-1 group hover:text-white cursor-pointer inline-block w-full"><img src="/images/arrow.png" class="w-12 h-12 mr-5 fill-amber-300 hidden group-hover:inline-block ">RipplePets NFT</p>
             </div>
+            <div class="block w-full bg-sky-600 p-5 border-8 border-l-sky-800 border-t-sky-800 border-r-sky-300 border-b-sky-300">
+                <h1 class="font-extrabold text-7xl stroke-2 text-center mb-4">ORB Setups</h1>
+
+                <img src="/images/orb.jpg" class="w-[50%] h-auto block mx-auto mb-10">
+                <p class="text-white text-lg font-mono">Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis ut similique voluptatem eligendi sequi architecto, accusantium debitis ipsum? Veritatis assumenda necessitatibus dicta nesciunt eaque velit excepturi commodi praesentium laudantium nemo.</p>
+            </div>
+    </div>
+    <div class="w-full h-[100vh] text-amber-300 relative overflow-hidden bg-sky-400 p-5">
+        <div class="block w-full text-center my-5">
+            <h1 class="font-extrabold text-9xl stroke-2">Tech Stack</h1>
+        </div>
+        <div class=" grid grid-rows-5 gap-10 grid-flow-col w-[50%]  block mx-auto">
+            <img src="/images/logo/js.png" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/typescript.png" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/php.png" class="bg-slate-300 p-1 w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/python.webp" class="bg-white p-1 w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/express.png" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/nodejs.png" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/sails.webp" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/wordpress.svg" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/codeigniter.png" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/remotion.jpg" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/react.png" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/html.png" class="p-1 bg-white w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/css.png" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/less.webp" class="bg-white w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/tailwind.png" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/bootstrap.png" class="bg-white p-1 w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/mysql.png" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/postgreSQL.png" class="p-1 bg-white w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/redise.png" class="p-1 bg-white w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/sqlite.png" class="p-1 bg-white w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/aws.png" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/digitalocean.png" class="p-1 bg-white w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/git.png" class="p-1 bg-white w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/github.png" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/selenium.png" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/figma.png" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/ps.avif" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/ILLUSTRATOR.png" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/xd.svg" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+            <img src="/images/logo/premier.webp" class="w-24 h-24 border-4 border-l-sky-600 border-t-sky-600 border-r-sky-300 border-b-sky-300 hover:outline outline-2 outline-white">
+        </div>
+    </div>
+    <div class="w-full h-fit-content overflow-hidden bg-gradient-to-b from-sky-400 from-5% to-sky-100 relative cursor-pointer">
+        <div class="block w-full text-center mt-16">
+            <h1 class="font-extrabold text-8xl text-slate-800 pb-[30rem] pt-[10rem]">Score: 0</h1>
+        </div>
+
+        <div class="w-full h-[6rem] bg-slate-800 block relative" id="game">
+
+            <div class="w-[5rem] h-[5rem] bg-white left-72 absolute" style="top: -5rem;" id="player"></div>
             
-        </section>
-        <section id="about">
-            <div>
-                <div class="content">
-                    <p class="sectionTitle">{ <span>About Me</span> }</p>
-                    <div class="pos-relative">
-                        <p class="aboutDescription">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae quasi, laudantium labore voluptatum veritatis modi velit unde magni natus eligendi corporis soluta obcaecati facilis quidem iure autem eius similique adipisci?</p>
-                        <p class="aboutDescription">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae quasi, laudantium labore voluptatum veritatis modi velit unde magni natus eligendi corporis soluta obcaecati facilis quidem iure autem eius similique adipisci?</p>
-                        <div class="imageContainer">
-                            <div class="imgOverlay"></div>
-                            <img src="profilepic.png" alt="">
-                            <div class="imgbg"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section id="skills">
-            <div>
-                <div class="content">
-                    <p class="sectionTitle">{ <span>My Tech Stack</span> }</p>
-                    <div class="colorFilter">
-                        <ul>
-                            <li class="sb-checkbox"><input class="sb-checkbox__input" checked type="checkbox" name="check1" id="check1"><label for="check1" class="sb-checkbox__label sb-checkbox__label--green"></label><p>Programming Language</p></li>
-                            <li class="sb-checkbox"><input class="sb-checkbox__input" checked type="checkbox" name="check2" id="check2"><label for="check2" class="sb-checkbox__label sb-checkbox__label--green"></label><p>Frameworks</p></li>
-                            <li class="sb-checkbox"><input class="sb-checkbox__input" checked type="checkbox" name="check3" id="check3"><label for="check3" class="sb-checkbox__label sb-checkbox__label--green"></label><p>Database</p></li>
-                            <li class="sb-checkbox"><input class="sb-checkbox__input" checked type="checkbox" name="check4" id="check4"><label for="check4" class="sb-checkbox__label sb-checkbox__label--green"></label><p>Development Tools</p></li>
-                            <li class="sb-checkbox"><input class="sb-checkbox__input" checked type="checkbox" name="check5" id="check5"><label for="check5" class="sb-checkbox__label sb-checkbox__label--green"></label><p>Web Design</p></li>
-                            <li class="sb-checkbox"><input class="sb-checkbox__input" checked type="checkbox" name="check6" id="check6"><label for="check6" class="sb-checkbox__label sb-checkbox__label--green"></label><p>Libraries</p></li>
-                            <li class="sb-checkbox"><input class="sb-checkbox__input" checked type="checkbox" name="check7" id="check7"><label for="check7" class="sb-checkbox__label sb-checkbox__label--green"></label><p>Code Versioning</p></li>
-                            <li class="sb-checkbox"><input class="sb-checkbox__input" checked type="checkbox" name="check8" id="check8"><label for="check8" class="sb-checkbox__label sb-checkbox__label--green"></label><p>Creative Tools</p></li>
-                            <li class="sb-checkbox"><input class="sb-checkbox__input" checked type="checkbox" name="check9" id="check9"><label for="check9" class="sb-checkbox__label sb-checkbox__label--green"></label><p>Testing</p></li>
-                        </ul>
-                    </div>
-                    <ul class="skillBlocks">
-                        <li><img src="github.png" alt="" srcset=""> <p>JavaScript</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>PHP</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>Python</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>Django</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>Express</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>CodeIgniter</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>Bootstrap</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>MySQL</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>PostgreSQL</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>Redis</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>Docker</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>NodeJS</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>HTML</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>CSS</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>LESS</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>JQuery</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>Socket.IO</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>AJAX</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>Git</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>Github</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>Adobe XD</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>Photoshop</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>Illustrator</p></li>
-                        <li><img src="github.png" alt="" srcset=""> <p>Premiere</p></li>
-                    </ul>
-                    
-                </div>
-            </div>
-        </section>
 
-    </main>
+        </div>
+    </div>
 </body>
-<script src="particles.js"></script>
 </html>
