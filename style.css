@@ -38,7 +38,7 @@ body {
 
 
 .title {
-    animation: titleBtT 5s linear infinite;
+    animation: titleBtT 10s linear infinite;
 
 }
 
@@ -47,6 +47,15 @@ body {
     animation: titleBtT 8s linear infinite;
 
 }
+
+.bird1 {
+    animation: fly1 5s ease-in-out infinite;
+}
+
+.bird2 {
+    animation: fly2 5s ease-in-out infinite;
+}
+
 
 
 @keyframes cloudsLtR {
@@ -60,13 +69,14 @@ body {
 
 @keyframes titleBtT {
     0% {
-        margin-bottom: 0;
+        margin-top: 0;
     }
     50% {
-        margin-bottom: 50px;
+        margin-top: 50px;
     }
     100% {
-        margin-bottom: 0px;
+        margin-top: 0px;
     }
 }
+  
   
