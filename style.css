@@ -38,13 +38,13 @@ body {
 
 
 .title {
-    animation: titleBtT 10s linear infinite;
+    animation: titleBtT 10s ease-in-out infinite;
 
 }
 
 
 .title2 {
-    animation: titleBtT 8s linear infinite;
+    animation: titleBtT 8s ease-in-out infinite;
 
 }
 
