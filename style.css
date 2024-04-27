@@ -38,7 +38,7 @@ body {
 
 
 .title {
-    animation: titleBtT 10s ease-in-out infinite;
+    animation: titleBtT 3s ease-in-out infinite;
 
 }
 
@@ -48,13 +48,14 @@ body {
 
 }
 
+
 .bird1 {
     animation: fly1 5s ease-in-out infinite;
 }
-
 .bird2 {
     animation: fly2 5s ease-in-out infinite;
 }
+
 
 
 
@@ -72,11 +73,38 @@ body {
         margin-top: 0;
     }
     50% {
-        margin-top: 50px;
+        margin-top: 15px;
     }
     100% {
         margin-top: 0px;
     }
 }
+
+@keyframes  fly1 {
+
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(25px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes  fly2 {
+
+    0% {
+        transform: translateY(25px);
+    }
+    50% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(25px);
+    }
+}
+
   
   
