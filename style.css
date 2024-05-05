@@ -56,9 +56,6 @@ body {
     animation: fly2 5s ease-in-out infinite;
 }
 
-
-
-
 @keyframes cloudsLtR {
     0% {
         left: -30%;

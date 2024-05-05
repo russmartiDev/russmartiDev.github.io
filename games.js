@@ -15,12 +15,12 @@ document.addEventListener("DOMContentLoaded", ()=>{
     let i = 0;
     setInterval(()=>{
         if(playerY < -5 && top) {
-            playerY += 1;
+            playerY += 1.5;
             player.style.top = `${playerY}rem`
         }
 
         if(jump && playerY > -25) {
-            playerY += -1;
+            playerY += -2;
             player.style.top = `${playerY}rem`
         }
         else if (jump && playerY <= -25) {
@@ -28,11 +28,14 @@ document.addEventListener("DOMContentLoaded", ()=>{
             jump = false
         }
 
-        if(playerY == -5 && top) {
+        if(playerY >= -5 && top) {
             top = false;
+            playerY = -5;
+            player.style.top = `${playerY}rem`
+
         }
 
-        if(i % 10 == 0 ) {
+        if(i % 5 == 0 ) {
             if(obstacleX < 110 ) {
                 obstacleX += 1;
                 obstacle.style.right = `${obstacleX}%`;
@@ -45,15 +48,21 @@ document.addEventListener("DOMContentLoaded", ()=>{
         }
         i+=5;
         
-    },15)
+    },30)
     
 
     document.querySelector("body").addEventListener("click", () => {
-        console.log("player jump")
         if(!top) {
             jump = true;
 
         }
-
+    });
+    document.querySelector("body").addEventListener("keyup", () => {
+        if (event.code === 'Space') {
+            if(!top) {
+                jump = true;
+    
+            }        
+        } 
     });
 });
