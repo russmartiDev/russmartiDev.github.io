@@ -47,14 +47,19 @@ document.addEventListener("DOMContentLoaded", ()=>{
 
     let mouseIn = false;
     const techText = document.querySelectorAll(".tech");
-    const techDisplay = document.querySelector("#tech-display")
+    const techDisplay = document.querySelector("#tech-display");
+    let textDisplay = "";
+    let textCount = 0;
     for(let tech of techText){
         tech.addEventListener("mouseover", function(){
-            techDisplay.innerText = this.getAttribute("data-tech");
+            // techDisplay.innerText = this.getAttribute("data-tech");
+            textDisplay = this.getAttribute("data-tech");
             mouseIn = true;
         });
         tech.addEventListener("mouseout", function(){
             techDisplay.innerText = "TechStack";
+            textDisplay = "";
+            textCount = 0;
             mouseIn = false;
         });
     }
@@ -68,6 +73,19 @@ document.addEventListener("DOMContentLoaded", ()=>{
                 let randomIndex = Math.floor(Math.random() * characters.length);
                 text += characters[randomIndex];
             }
+            techDisplay.innerText = text;
+        }
+        else if(mouseIn && textCount <= textDisplay.length){
+            const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789";
+            let randomIndex = Math.floor(Math.random() * characters.length);
+            let text = textDisplay.slice(0, textCount);
+
+            for(let i = textCount; i < textDisplay.length; i++) {
+                let randomIndex = Math.floor(Math.random() * characters.length);
+                text += characters[randomIndex];
+            }
+
+            textCount++;
             techDisplay.innerText = text;
         }
     }, 100);
