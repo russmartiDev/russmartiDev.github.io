@@ -8,15 +8,40 @@ document.addEventListener("DOMContentLoaded", ()=>{
             });
         });
     });
-
+    let display = 0;
     const displayOptions = document.querySelectorAll(".option");
     const displayView = document.querySelectorAll(".menu");
+    const nextDisplay = document.querySelectorAll(".next");
+    const prevDisplay = document.querySelectorAll(".prev");
     for(let i = 0; i < displayOptions.length; i++){
         displayOptions[i].addEventListener("click", function(){
             for(let display of displayView){
                 display.classList.add("hidden");
             }
             displayView[i].classList.remove("hidden");
+            display = i;
+        });
+    }
+    for(let next of nextDisplay){
+        next.addEventListener("click", function () {
+            if(display < nextDisplay.length - 1) {
+                for(let display of displayView){
+                    display.classList.add("hidden");
+                }
+                display += 1;
+                displayView[display].classList.remove("hidden");
+            }
+        });
+    }
+    for(let prev of prevDisplay){
+        prev.addEventListener("click", function () {
+            if(display > 0) {
+                for(let display of displayView){
+                    display.classList.add("hidden");
+                }
+                display -= 1;
+                displayView[display].classList.remove("hidden");
+            }
         });
     }
 
@@ -44,7 +69,6 @@ document.addEventListener("DOMContentLoaded", ()=>{
                 text += characters[randomIndex];
             }
             techDisplay.innerText = text;
-            console.log("test")
         }
     }, 100);
 });
