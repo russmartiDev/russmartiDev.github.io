@@ -1,6 +1,10 @@
 body {
     font-family: 'Pixelify Sans';
 }
+.bg-dot {
+    background-image: radial-gradient(black 1px, transparent 0);
+    background-size: 50px 50px;
+}
 .stroke-2 {
         -webkit-text-stroke-width: 3px;
         -webkit-text-stroke-color: rgb(59, 59, 59);
