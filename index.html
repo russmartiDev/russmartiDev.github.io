@@ -22,7 +22,10 @@
     --mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
   }
   *{box-sizing:border-box}
-  html,body{height:100%;margin:0;overflow:hidden}
+  html,body{margin:0}
+  @media (min-width: 970px){
+    html,body{height:100%;overflow:hidden}
+  }
   body{
     background:var(--bg);
     color:var(--ink);
@@ -41,13 +44,15 @@
   .frame{
     position:relative;
     width:100vw; height:100vh;
-    min-width:1024px;
     overflow:hidden;
     background:#e3e3df;
   }
 
   /* ---------- Background layer ---------- */
   .bg-layer{ position:absolute; inset:0; pointer-events:none; }
+
+  /* Hero brand poster — desktop hides it; stacked layout reveals it (<970px) */
+  .hero-poster{ display:none; }
   .bg-stack{
     position:absolute; inset:0;
     opacity:0;
@@ -289,6 +294,12 @@
     margin-top:6px;
     font-size:15px; color:var(--ink); font-weight:500; letter-spacing:-0.005em;
   }
+  .fact-link{
+    color:inherit; text-decoration:none;
+    border-bottom:1px solid var(--hair-strong);
+    transition:color .2s, border-color .2s;
+  }
+  .fact-link:hover{ color:var(--navy); border-bottom-color:var(--navy); }
 
   /* ---------- Work timeline ---------- */
   .timeline{
@@ -347,6 +358,28 @@
   }
   .role.current .tag{ background:var(--navy); color:#fff; }
 
+  /* Subroles — multiple positions within a single company */
+  .role .subrole{
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px dashed var(--hair);
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .role .subrole:first-of-type{
+    margin-top:6px;
+    padding-top:0;
+    border-top:0;
+  }
+  .subrole-head{
+    display:flex; align-items:baseline; flex-wrap:wrap; gap:10px;
+  }
+  .subrole-title{
+    font-size:14px; font-weight:600; color:var(--ink); letter-spacing:-0.005em;
+  }
+  .subrole-yr{
+    font-family:var(--mono); font-size:10.5px; color:var(--muted); letter-spacing:.10em;
+  }
+
   /* ---------- Skills ---------- */
   .skillgroups{
     margin-top:22px;
@@ -354,6 +387,7 @@
     gap:16px 36px; max-width:620px;
   }
   @media (min-height: 760px){ .skillgroups{ margin-top:30px; gap:22px 40px; } }
+  .sk.sk-wide{ grid-column: 1 / -1; }
   .sk h4{
     margin:0 0 10px;
     font-family:var(--mono); font-size:10px; color:var(--muted);
@@ -439,6 +473,7 @@
   */
   body.chrome-hidden .veil,
   body.chrome-hidden .brandmark,
+  body.chrome-hidden .hero-poster,
   body.chrome-hidden footer.bot,
   body.chrome-hidden .scene[data-scene="home"]{
     opacity:0 !important;
@@ -480,6 +515,264 @@
     from{ opacity:0; transform:translateY(10px) }
     to  { opacity:1; transform:none }
   }
+
+  /* ============================================================
+     STACKED LAYOUT  (tablet + phone, viewport < 970px)
+     - Video becomes a top hero region (cover, right-anchored)
+     - Content column flows beneath the hero
+     - Body uses native page scroll
+     - footer/brandmark sit in document flow (not fixed) so they
+       don't overlap content as the page scrolls
+     ============================================================ */
+  @media (max-width: 969px){
+    html, body { height: auto; overflow: visible; }
+    body { background:#e3e3df; }
+
+    .stage{
+      position: static;
+      display: block;
+      background: transparent;
+    }
+    .frame{
+      position: static;
+      width: 100%;
+      height: auto;
+      min-height: 100vh;
+      overflow: visible;
+      background: transparent;
+    }
+
+    /* HERO — top of page */
+    .bg-layer{
+      position: relative;
+      width: 100%;
+      height: 45vh;
+      overflow: hidden;
+    }
+    /* Bottom-of-hero gradient — always visible (not gated by chrome-hidden like .veil) */
+    .bg-layer::after{
+      content: "";
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 100%;
+      background: linear-gradient(180deg,
+        rgba(227,227,223,0)   0%,
+        rgba(227,227,223,0)  88%,
+        rgba(227,227,223,.35) 96%,
+        rgba(227,227,223,1)  100%);
+      pointer-events: none;
+      z-index: 6;
+    }
+    .bg-stack{ position: absolute; inset: 0; }
+    .vid{
+      object-fit: cover;
+      object-position: right center;
+    }
+    /* Disable the home-intro slide on stacked layouts — video sits at 100% width, right-anchored, from t=0 */
+    .bg-stack[data-bg="home"] .vid{
+      transition: none;
+    }
+    body.intro-pending .bg-stack[data-bg="home"] .vid{
+      object-position: right center;
+    }
+
+    /* Vertical scrim at the bottom edge of the hero so the seam reads softly */
+    .veil{
+      background: linear-gradient(180deg,
+        rgba(227,227,223,0)   0%,
+        rgba(227,227,223,0)  68%,
+        rgba(227,227,223,.55) 88%,
+        rgba(227,227,223,1) 100%);
+    }
+
+    /* Brandmark above the hero (document-flow) */
+    .brandmark{
+      position: absolute;
+      top: 14px; left: 24px;
+      z-index: 20;
+    }
+
+    /* Content column below hero */
+    .stagecontent{
+      position: static;
+      width: 100%;
+      max-width: none;
+    }
+    .panel{
+      position: static;
+      width: 100%;
+      height: auto;
+    }
+
+    /* Scenes flow as normal blocks; only the active scene renders */
+    .scene{
+      position: static;
+      inset: auto;
+      width: 100%;
+      height: auto;
+      padding: 40px 32px;
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+      transition: none;
+      overflow: visible;
+      display: none;
+    }
+    .scene.active{
+      display: flex;
+    }
+    .scene[data-scene="home"]{
+      padding: 40px 32px;
+      justify-content: flex-start;
+    }
+    /* Keep chrome-hidden behavior on stacked: home stays invisible until reveal */
+    body.chrome-hidden .scene[data-scene="home"]{
+      opacity: 0 !important;
+    }
+
+    /* The .scroll inner wrapper becomes a plain block: no mask, no clip */
+    .scene .scroll{
+      flex: none;
+      overflow: visible;
+      mask-image: none;
+      -webkit-mask-image: none;
+      padding-right: 0;
+      margin-right: 0;
+    }
+    /* Scroll cue is desktop-only affordance */
+    .scrollcue{ display: none; }
+
+    /* Footer sits in document flow at the end of the page */
+    footer.bot{
+      position: static;
+      left: auto; bottom: auto;
+      padding: 24px 32px 32px;
+      margin-top: 12px;
+    }
+
+    /* Typography rescale */
+    h1.display{
+      font-size: clamp(40px, 7.5vw, 64px);
+      margin-top: 14px;
+    }
+    h2.sectionhead{
+      font-size: clamp(24px, 4.2vw, 34px);
+    }
+    .lede{
+      font-size: 15px;
+      line-height: 1.55;
+      margin-top: 14px;
+    }
+
+    /* Scene padding tuned for tablet */
+    .scene[data-scene="about"],
+    .scene[data-scene="work"],
+    .scene[data-scene="skills"],
+    .scene[data-scene="certs"]{
+      padding-top: 56px;
+    }
+
+    /* ---- Hero brand poster (overlay on the left of the hero) ---- */
+    .brandmark{ display: none; }
+    .hero-poster{
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: flex-start;
+      position: absolute;
+      inset: 0;
+      width: 50%;
+      max-width: 50%;
+      padding: 24px 24px 28px;
+      pointer-events: none;
+      z-index: 8;
+    }
+    /* Left-edge horizontal scrim — opaque page color → transparent ~55% across the poster box */
+    .hero-poster::before{
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg,
+        var(--bg) 0%,
+        var(--bg) 30%,
+        rgba(227,227,223,.85) 55%,
+        rgba(227,227,223,0) 100%);
+      pointer-events: none;
+      z-index: -1;
+    }
+    .hero-poster-name{
+      margin: 0;
+      font-family: var(--display);
+      font-weight: 700;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      font-size: clamp(28px, 7vw, 44px);
+    }
+    .hero-poster-role{
+      margin: 10px 0 0;
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.4;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      color: var(--muted);
+      max-width: 18ch;
+      text-wrap: balance;
+    }
+  }
+
+  /* ============================================================
+     PHONE TIER (<640px) — tighter spacing, larger tap targets
+     ============================================================ */
+  @media (max-width: 639px){
+    .bg-layer{ height: 40vh; }
+    .brandmark{ top: 12px; left: 16px; }
+    .brandmark .name{ font-size: 10px; }
+
+    .scene,
+    .scene[data-scene="home"]{
+      padding: 28px 20px;
+    }
+    .scene[data-scene="about"],
+    .scene[data-scene="work"],
+    .scene[data-scene="skills"],
+    .scene[data-scene="certs"]{
+      padding: 44px 20px 28px;
+    }
+    footer.bot{ padding: 20px 20px 28px; gap: 16px; }
+    footer.bot .crumb{ font-size: 10px; letter-spacing: .12em; }
+    footer.bot .pager{ font-size: 10px; letter-spacing: .12em; }
+
+    h1.display{ font-size: clamp(32px, 9vw, 44px); }
+    h2.sectionhead{ font-size: clamp(22px, 6.5vw, 28px); }
+    .lede{ font-size: 14px; line-height: 1.55; }
+
+    /* Tap targets ≥ 44×44 */
+    .menu button{
+      min-height: 56px;
+      padding: 14px 6px 14px 0;
+      font-size: 17px;
+      grid-template-columns: 26px 1fr auto;
+      gap: 14px;
+    }
+    .menu button .arr{ opacity: 1; transform: none; }
+    .back{
+      min-height: 44px;
+      padding: 12px 0;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    /* Grids collapse to one column where tight */
+    .factgrid{ grid-template-columns: 1fr; gap: 16px; }
+    .skillgroups{ grid-template-columns: 1fr; gap: 18px; }
+
+    /* Hero brand poster — phone scale */
+    .hero-poster{ padding: 20px 18px 22px; }
+    .hero-poster-name{ font-size: clamp(26px, 8.5vw, 34px); }
+    .hero-poster-role{ font-size: 10px; letter-spacing: .08em; max-width: 16ch; }
+  }
 </style>
 </head>
 <body>
@@ -510,12 +803,18 @@
         <video class="vid loop"  data-phase="loop"  muted playsinline preload="auto" loop src="loop/certification.mp4"></video>
       </div>
       <div class="veil"></div>
+
+      <!-- Stacked-layout brand poster (hidden on desktop; absorbs the brandmark <970px) -->
+      <div class="hero-poster" aria-label="Russell Martinez — AI Development and Automation">
+        <h1 class="hero-poster-name">Russell Martinez</h1>
+        <p class="hero-poster-role">AI Development and Automation</p>
+      </div>
     </div>
 
     <!-- BRAND MARK (left only — does not cross into right side) -->
     <div class="brandmark">
       <div class="mark">RM</div>
-      <div class="name">Russell&nbsp;Martinez<small>Full‑stack Developer</small></div>
+      <div class="name">Russell&nbsp;Martinez<small>AI Development and Automation</small></div>
     </div>
 
     <!-- CONTENT -->
@@ -539,13 +838,13 @@
           <div class="eyebrow" style="margin-top:22px"><span class="num">01</span><span class="bar"></span><span>About me</span></div>
           <h2 class="sectionhead">A developer who likes <em>quiet, fast software.</em></h2>
           <div class="scroll">
-            <p class="lede">Four years in, I work the full stack — TypeScript on both ends, Postgres and BigQuery for data, GCP for the boring infrastructure parts. I care about load times, clean APIs, and code other people can read on a Monday morning.</p>
+            <p class="lede">AI Automations Lead, four years in. Spec‑driven, AI‑augmented, deployed on GCP — I build the systems that quietly keep operations running.</p>
             <div class="factgrid">
               <div class="fact"><div class="k">Based in</div><div class="v">Quezon City, PH</div></div>
               <div class="fact"><div class="k">Currently</div><div class="v">State and Liberty</div></div>
               <div class="fact"><div class="k">Years building</div><div class="v">4+ years</div></div>
               <div class="fact"><div class="k">Email</div><div class="v">russell.martinez.dev@gmail.com</div></div>
-              <div class="fact"><div class="k">LinkedIn</div><div class="v">/in/russmartidev</div></div>
+              <div class="fact"><div class="k">LinkedIn</div><div class="v"><a href="https://www.linkedin.com/in/russmartidev" target="_blank" rel="noopener noreferrer" class="fact-link">/in/russmartidev</a></div></div>
               <div class="fact"><div class="k">Mobile</div><div class="v">+63 927 854 6615</div></div>
             </div>
           </div>
@@ -555,7 +854,7 @@
         <section class="scene" data-scene="work">
           <button class="back" data-go="home"><span class="chev"></span>Back to menu</button>
           <div class="eyebrow" style="margin-top:22px"><span class="num">02</span><span class="bar"></span><span>Work experience</span></div>
-          <h2 class="sectionhead">Four roles, <em>one stack mindset.</em></h2>
+          <h2 class="sectionhead">From writing software <em>to orchestrating it.</em></h2>
           <div class="scroll" id="workScroll">
           <div class="timeline">
             <div class="role current">
@@ -563,14 +862,39 @@
               <div class="body">
                 <div class="head">
                   <span class="who">State and Liberty</span>
-                  <span class="role-title">· Full‑stack Developer</span>
                   <span class="tag">Current</span>
                 </div>
-                <div class="stack">
-                  <span>Retool</span><span>Node.js</span><span>React</span><span>GCP</span><span>BigQuery</span><span>PostgreSQL</span><span>Selenium</span>
-                </div>
+
+                <div class="subrole">
+                  <div class="subrole-head">
+                    <span class="subrole-title">AI Automation Lead</span>
+                    <span class="subrole-yr">Apr 2026 — Now</span>
+                  </div>
+                  <div class="stack">
+                    <span>Claude</span><span>MCP</span><span>n8n</span><span>GCP</span><span>Cloud Run</span><span>BigQuery</span><span>Dataplex</span><span>IAP</span><span>CI/CD</span>
+                  </div>
                 <ul class="dets">
-                  <li>Built internal web apps in Retool to streamline business operations.</li>
+                  <li>Led company transition to AI‑assisted development, accelerating delivery velocity ~10×.</li>
+                  <li>Lead the automation team across supply chain, store operations, and analytics.</li>
+                  <li>Drove GCP cost optimization across BigQuery, Dataplex, and Cloud Run, delivering $100K+ in annual savings.</li>
+                  <li>Designed custom MCP tools integrating internal data systems with Claude for natural‑language operations.</li>
+                  <li>Architected and deployed n8n workflow automations on Google Cloud Run.</li>
+                  <li>Configured GCP load balancing with IAP, path‑based routing, and Certificate Manager across prod and dev.</li>
+                  <li>Built cloud infrastructure and CI/CD pipelines standardizing application deployment.</li>
+                  <li>Partnered with operations to translate business requirements into production automation specs end‑to‑end.</li>
+                  </ul>
+                </div>
+
+                <div class="subrole">
+                  <div class="subrole-head">
+                    <span class="subrole-title">Full‑stack Developer</span>
+                    <span class="subrole-yr">2024 — Apr 2026</span>
+                  </div>
+                  <div class="stack">
+                    <span>Retool</span><span>Node.js</span><span>React</span><span>GCP</span><span>BigQuery</span><span>PostgreSQL</span><span>Selenium</span>
+                  </div>
+                  <ul class="dets">
+                    <li>Built internal web apps in Retool to streamline business operations.</li>
                   <li>Automated tasks and data updates with Workflows, cutting manual work.</li>
                   <li>Optimized queries and pages — load time from 1 min down to 5 s.</li>
                   <li>Designed automated HTML / CSS email templates.</li>
@@ -579,7 +903,8 @@
                   <li>Wrote custom React components for tailored UI functionality.</li>
                   <li>Built internal mobile apps; integrated Cloud Storage for files.</li>
                   <li>Reviewed code and mentored teammates through complex problems.</li>
-                </ul>
+                  </ul>
+                </div>
               </div>
             </div>
 
@@ -596,7 +921,7 @@
                 </div>
                 <ul class="dets">
                   <li>Built a serverless Astro + TS app generating crypto chart videos with Remotion.</li>
-                  <li>Shipped a Next.js app integrating multiple APIs for lead capture into MySQL.</li>
+                  <li>Shipped a Next.js app integrating multiple APIs for capture into MySQL.</li>
                   <li>Designed UI / UX in Figma — intuitive, visually appealing layouts.</li>
                   <li>Automated business tasks with Google Apps Script.</li>
                 </ul>
@@ -654,34 +979,53 @@
           <button class="back" data-go="home"><span class="chev"></span>Back to menu</button>
           <div class="eyebrow" style="margin-top:22px"><span class="num">03</span><span class="bar"></span><span>Skills &amp; toolkit</span></div>
           <h2 class="sectionhead">The kit I <em>actually reach for.</em></h2>
-          <div class="scroll">
+          <div class="scroll" id="skillsScroll">
           <div class="skillgroups">
+            <div class="sk sk-wide">
+              <h4>What I build</h4>
+              <div class="chips">
+                <span class="chip">Mobile App Development</span><span class="chip">Web App Development</span>
+                <span class="chip">Desktop App</span><span class="chip">Secured Cloud Infrastructure</span>
+                <span class="chip">Workflow Automation</span><span class="chip">AI Automation</span>
+                <span class="chip">AI Integration</span><span class="chip">API Integration</span>
+                <span class="chip">Custom System Development</span><span class="chip">System Design</span>
+              </div>
+            </div>
+            <div class="sk">
+              <h4>AI Tools</h4>
+              <div class="chips">
+                <span class="chip">Claude Code</span><span class="chip">Claude Design</span>
+                <span class="chip">Veo Flow</span><span class="chip">Gemini</span>
+                <span class="chip">Codex</span><span class="chip">MCP Server</span>
+              </div>
+            </div>
             <div class="sk">
               <h4>Languages</h4>
               <div class="chips">
-                <span class="chip primary">JavaScript</span><span class="chip primary">TypeScript</span>
+                <span class="chip">JavaScript</span><span class="chip">TypeScript</span>
                 <span class="chip">PHP</span><span class="chip">Python</span>
               </div>
             </div>
             <div class="sk">
               <h4>Frameworks</h4>
               <div class="chips">
-                <span class="chip primary">React</span><span class="chip primary">Next.js</span>
-                <span class="chip">Node / Express</span><span class="chip">Sails.js</span>
+                <span class="chip">React</span><span class="chip">Next.js</span>
+                <span class="chip">Node JS</span><span class="chip">Express JS</span><span class="chip">Sails.js</span>
                 <span class="chip">CodeIgniter</span><span class="chip">WordPress</span>
-                <span class="chip">Retool</span>
+                <span class="chip">Retool</span><span class="chip">Remotion</span>
+                <span class="chip">React Native</span>
               </div>
             </div>
             <div class="sk">
               <h4>Data</h4>
               <div class="chips">
-                <span class="chip">PostgreSQL</span><span class="chip">MySQL</span><span class="chip">BigQuery</span>
+                <span class="chip">PostgreSQL</span><span class="chip">MySQL</span><span class="chip">Cloud SQL</span><span class="chip">BigQuery</span>
               </div>
             </div>
             <div class="sk">
               <h4>Cloud &amp; ops</h4>
               <div class="chips">
-                <span class="chip primary">GCP</span><span class="chip">AWS</span>
+                <span class="chip">GCP</span><span class="chip">AWS</span>
                 <span class="chip">DigitalOcean</span><span class="chip">Vercel</span>
                 <span class="chip">Selenium</span><span class="chip">Apps Script</span>
               </div>
@@ -703,6 +1047,7 @@
             </div>
           </div>
           </div>
+          <div class="scrollcue" id="skillsCue"><span>Scroll</span><span class="chev"></span></div>
         </section>
 
         <!-- CERTS -->
@@ -719,12 +1064,12 @@
             </div>
             <div class="cert">
               <div class="ic">GCP</div>
-              <div class="t">Google Cloud Platform — Practitioner<small>Cloud Run, Cloud Functions, Cloud Storage, BigQuery</small></div>
-              <div class="yr">In progress</div>
+              <div class="t">Google Professional Cloud Architect<small>Cloud Run, Cloud Functions, Cloud Storage, BigQuery</small></div>
+              <div class="yr">Ongoing</div>
             </div>
             <div class="cert">
-              <div class="ic">JS</div>
-              <div class="t">Modern JavaScript &amp; TypeScript<small>Self‑directed coursework · 2021 — present</small></div>
+              <div class="ic">AI</div>
+              <div class="t">Claude Certified Architect</div>
               <div class="yr">Ongoing</div>
             </div>
           </div>
@@ -889,25 +1234,29 @@
       document.body.classList.remove('intro-pending');
     }, 4000);
 
-    // scroll-cue arrow on Work Experience
-    const ws = document.getElementById('workScroll');
-    const wc = document.getElementById('workCue');
-    function updateCue(){
-      if(!ws || !wc) return;
-      const more = ws.scrollHeight - ws.clientHeight - ws.scrollTop > 12;
-      wc.classList.toggle('show', more);
+    // scroll-cue arrows
+    function wireScrollCue(scrollId, cueId, sceneKey){
+      const scrollEl = document.getElementById(scrollId);
+      const cueEl = document.getElementById(cueId);
+      if(!scrollEl || !cueEl) return;
+      const sceneEl = document.querySelector('.scene[data-scene="'+sceneKey+'"]');
+      function update(){
+        const more = scrollEl.scrollHeight - scrollEl.clientHeight - scrollEl.scrollTop > 12;
+        cueEl.classList.toggle('show', more);
+      }
+      scrollEl.addEventListener('scroll', update, {passive:true});
+      window.addEventListener('resize', update);
+      if(sceneEl){
+        const obs = new MutationObserver(()=> {
+          if(sceneEl.classList.contains('active')) requestAnimationFrame(update);
+          else cueEl.classList.remove('show');
+        });
+        obs.observe(sceneEl, {attributes:true, attributeFilter:['class']});
+      }
+      requestAnimationFrame(update);
     }
-    if(ws){
-      ws.addEventListener('scroll', updateCue, {passive:true});
-      window.addEventListener('resize', updateCue);
-      const workScene = document.querySelector('.scene[data-scene="work"]');
-      const obs = new MutationObserver(()=> {
-        if(workScene.classList.contains('active')) requestAnimationFrame(updateCue);
-        else wc.classList.remove('show');
-      });
-      obs.observe(workScene, {attributes:true, attributeFilter:['class']});
-      requestAnimationFrame(updateCue);
-    }
+    wireScrollCue('workScroll',   'workCue',   'work');
+    wireScrollCue('skillsScroll', 'skillsCue', 'skills');
   })();
 </script>
 </body>
