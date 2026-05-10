@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Russell M. Martinez — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#e3e3df;
+    --ink:oklch(0.20 0.012 260);
+    --ink-soft:oklch(0.42 0.012 260);
+    --muted:oklch(0.62 0.010 260);
+    --hair:oklch(0.90 0.008 260);
+    --hair-strong:oklch(0.78 0.010 260);
+    --navy:oklch(0.36 0.090 263);     /* hoodie navy */
+    --navy-soft:oklch(0.92 0.030 263);
+    --gold:oklch(0.74 0.110 80);
+    --display:"Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+    --mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;overflow:hidden}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--display);
+    font-feature-settings:"ss01","cv11";
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+
+  /* Stage scaling so the design fills any reasonable viewport */
+  .stage{
+    position:fixed; inset:0;
+    display:grid; place-items:center;
+    background:#e3e3df;
+  }
+  .frame{
+    position:relative;
+    width:100vw; height:100vh;
+    min-width:1024px;
+    overflow:hidden;
+    background:#e3e3df;
+  }
+
+  /* ---------- Background layer ---------- */
+  .bg-layer{ position:absolute; inset:0; pointer-events:none; }
+  .bg-stack{
+    position:absolute; inset:0;
+    opacity:0;
+    transition:opacity 200ms ease;
+    pointer-events:none;
+  }
+  .bg-stack.active{ opacity:1; }
+  .bg-stack[data-bg="home"]{ background-color:#e3e3df; }
+  .bg-stack[data-bg="skills"]{ background-color:#ffffff; }
+  .vid{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:contain;
+    object-position:right center;
+    opacity:0;
+    /* no transition — phase swaps must be instant */
+  }
+  .vid.visible{ opacity:1; }
+  /* Home video slides from left → right when the cinematic intro ends */
+  .bg-stack[data-bg="home"] .vid{
+    transition: object-position 1200ms cubic-bezier(.2,.7,.2,1);
+  }
+  body.intro-pending .bg-stack[data-bg="home"] .vid{
+    object-position: left center;
+  }
+
+  /* gentle white wash on the left so headline always wins over background */
+  .veil{
+    position:absolute; inset:0;
+    background:linear-gradient(90deg, #fff 0%, rgba(255,255,255,.98) 46%, rgba(255,255,255,.65) 60%, rgba(255,255,255,0) 75%);
+    pointer-events:none;
+  }
+
+  /* ---------- Brand mark (small, top-left) ---------- */
+  .brandmark{
+    position:absolute; top:18px; left:40px;
+    display:flex; align-items:center; gap:10px;
+    z-index:10;
+  }
+  .brandmark .mark{
+    width:22px; height:22px; border-radius:50%;
+    background:var(--navy); color:#fff;
+    display:grid; place-items:center;
+    font-family:var(--mono); font-size:9px; font-weight:500;
+  }
+  .brandmark .name{
+    font-size:11px; font-weight:600; letter-spacing:-0.005em; line-height:1.1;
+  }
+  .brandmark .name small{
+    display:block; font-weight:400; color:var(--muted);
+    font-family:var(--mono); font-size:9px; letter-spacing:.10em;
+    text-transform:uppercase; margin-top:2px;
+  }
+
+  /* ---------- Footer / page indicator ---------- */
+  footer.bot{
+    position:absolute; left:48px; bottom:22px;
+    display:flex; align-items:center; gap:24px;
+    z-index:10; pointer-events:none;
+  }
+  .crumb{
+    display:flex; align-items:center; gap:14px;
+    font-family:var(--mono); font-size:11px; color:var(--muted);
+    text-transform:uppercase; letter-spacing:.14em;
+  }
+  .crumb .pip{
+    width:6px; height:6px; border-radius:50%; background:var(--ink); display:inline-block;
+  }
+  .pager{
+    font-family:var(--mono); font-size:11px; color:var(--muted);
+    letter-spacing:.14em;
+  }
+  .pager b{ color:var(--ink); font-weight:500; }
+
+  /* ---------- Content slot — constrained to LEFT half so right is clean ---------- */
+  .stagecontent{
+    position:absolute;
+    top:0; bottom:0; left:0;
+    width:min(720px, 58vw);
+    z-index:5;
+  }
+  .panel{ position:relative; width:100%; height:100%; }
+
+  .scene{
+    position:absolute; inset:0;
+    padding:80px 40px 70px 56px;
+    display:flex; flex-direction:column;
+    opacity:0; transform:translateY(8px);
+    pointer-events:none;
+    transition:opacity .45s ease, transform .55s cubic-bezier(.2,.7,.2,1);
+    overflow:hidden;
+  }
+  .scene.active{ pointer-events:auto; }
+  /* inner content can scroll if needed; page itself never does */
+  .scene .scroll{
+    flex:1 1 auto;
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding-right:8px;
+    margin-right:-8px;
+    scrollbar-width:none;
+    -ms-overflow-style:none;
+    scroll-behavior:smooth;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    mask-image: linear-gradient(180deg, transparent 0, #000 14px, #000 calc(100% - 22px), transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 14px, #000 calc(100% - 22px), transparent 100%);
+  }
+  .scene .scroll::-webkit-scrollbar{ width:0; height:0; display:none; }
+
+  /* HOME scene is centered, no scroll, no padding-top header reservation */
+  .scene[data-scene="home"]{
+    padding:48px 40px 70px 56px;
+    justify-content:center;
+  }
+
+  @media (min-height: 760px){
+    .scene{ padding:108px 56px 92px 80px; }
+    .scene[data-scene="home"]{ padding:48px 56px 92px 80px; }
+  }
+  .scene.active{ opacity:1; transform:none; pointer-events:auto; }
+
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--muted);
+    display:flex; align-items:center; gap:12px;
+  }
+  .eyebrow .num{ color:var(--navy); font-weight:500; }
+  .eyebrow .bar{ width:36px; height:1px; background:var(--hair-strong); }
+
+  h1.display{
+    font-size:clamp(28px, 4.4vw, 72px);
+    line-height:1;
+    letter-spacing:-0.03em;
+    font-weight:300;
+    margin:10px 0 0;
+    color:var(--ink);
+  }
+  @media (min-height: 760px){ h1.display{ margin-top:18px; font-size:clamp(40px, 5.4vw, 84px); } }
+  h1.display em{
+    font-style:normal; font-weight:700; color:var(--navy);
+    letter-spacing:-0.04em;
+  }
+  h1.display .thin{ font-weight:200; color:var(--ink-soft); font-size:.62em; display:inline-block; margin-top:.15em; }
+
+  h2.sectionhead{
+    font-size:clamp(22px, 2.8vw, 36px);
+    line-height:1.05; letter-spacing:-0.02em;
+    font-weight:400; margin:10px 0 0;
+  }
+  h2.sectionhead em{ font-style:normal; font-weight:700; color:var(--navy); }
+
+  .lede{
+    margin-top:12px;
+    font-size:14px; line-height:1.5; color:var(--ink-soft);
+    max-width:46ch; font-weight:400;
+  }
+  @media (min-height: 760px){ .lede{ margin-top:22px; font-size:17px; line-height:1.55; } }
+
+  /* ---------- Home menu ---------- */
+  .menu{
+    margin-top:18px;
+    display:flex; flex-direction:column;
+    border-top:1px solid var(--hair);
+    max-width:640px;
+  }
+  .menu button{
+    all:unset;
+    cursor:pointer;
+    display:grid;
+    grid-template-columns: 28px 1fr auto;
+    align-items:center;
+    gap:18px;
+    padding:8px 6px 8px 0;
+    border-bottom:1px solid var(--hair);
+    font-size:16px; font-weight:500; letter-spacing:-0.01em;
+    color:var(--ink);
+    position:relative;
+  }
+  @media (min-height: 760px){ .menu button{ padding:16px 6px 16px 0; font-size:21px; } }
+  .menu button .idx{
+    font-family:var(--mono); font-size:11px; color:var(--muted);
+    letter-spacing:.14em;
+  }
+  .menu button .arr{
+    font-size:14px; color:var(--muted);
+    transform:translateX(-6px); opacity:0;
+    transition:transform .25s ease, opacity .25s ease;
+  }
+  .menu button::before{
+    content:""; position:absolute; left:0; right:0; bottom:-1px; height:1px;
+    background:var(--navy); transform:scaleX(0); transform-origin:left;
+    transition:transform .35s cubic-bezier(.2,.7,.2,1);
+  }
+  .menu button:hover{ color:var(--navy); }
+  .menu button:hover .arr{ opacity:1; transform:none; color:var(--navy); }
+  .menu button:hover::before{ transform:scaleX(1); }
+
+  .meta-row{
+    margin-top:24px;
+    display:flex; gap:36px;
+    font-family:var(--mono); font-size:11px; color:var(--muted);
+    letter-spacing:.14em; text-transform:uppercase;
+  }
+  .meta-row b{ display:block; color:var(--ink); font-weight:500; margin-top:6px; font-family:var(--display); font-size:13px; letter-spacing:0; text-transform:none; }
+
+  /* ---------- Back button (on inner scenes) ---------- */
+  .back{
+    all:unset;
+    cursor:pointer;
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:var(--mono); font-size:11px;
+    color:var(--muted); letter-spacing:.16em; text-transform:uppercase;
+    padding:8px 0;
+  }
+  .back:hover{ color:var(--ink); }
+  .back .chev{
+    display:inline-block; width:18px; height:1px; background:currentColor; position:relative;
+  }
+  .back .chev::before{
+    content:""; position:absolute; left:0; top:50%;
+    width:6px; height:6px; border-left:1px solid currentColor; border-bottom:1px solid currentColor;
+    transform:translateY(-50%) rotate(45deg);
+  }
+
+  /* ---------- About ---------- */
+  .factgrid{
+    margin-top:28px;
+    display:grid; grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:20px 32px; max-width:640px;
+  }
+  @media (min-height: 760px){ .factgrid{ margin-top:38px; gap:28px 36px; } }
+  .fact .k{
+    font-family:var(--mono); font-size:10px; color:var(--muted);
+    letter-spacing:.16em; text-transform:uppercase;
+  }
+  .fact .v{
+    margin-top:6px;
+    font-size:15px; color:var(--ink); font-weight:500; letter-spacing:-0.005em;
+  }
+
+  /* ---------- Work timeline ---------- */
+  .timeline{
+    margin-top:18px;
+    display:flex; flex-direction:column;
+    max-width:640px;
+    padding-bottom:24px;
+  }
+  @media (min-height: 760px){ .timeline{ margin-top:24px; } }
+  .role{
+    display:grid;
+    grid-template-columns: 86px 1fr;
+    column-gap:18px;
+    padding:14px 0 16px;
+    border-bottom:1px solid var(--hair);
+    align-items:flex-start;
+  }
+  .role:first-child{ border-top:1px solid var(--hair); }
+  .role .yr{
+    font-family:var(--mono); font-size:11px; color:var(--muted);
+    letter-spacing:.10em; padding-top:3px;
+  }
+  .role .body{ display:flex; flex-direction:column; gap:6px; }
+  .role .head{ display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+  .role .who{
+    font-size:16px; font-weight:600; letter-spacing:-0.01em; color:var(--ink);
+  }
+  .role .role-title{
+    font-size:13px; font-weight:400; color:var(--ink-soft); letter-spacing:0;
+  }
+  .role .stack{
+    display:flex; flex-wrap:wrap; gap:5px;
+  }
+  .role .stack span{
+    font-family:var(--mono); font-size:10px; color:var(--ink-soft);
+    background:#fff; border:1px solid var(--hair); border-radius:4px;
+    padding:2px 6px; letter-spacing:.02em;
+  }
+  .role ul.dets{
+    margin:4px 0 0; padding:0; list-style:none;
+    display:flex; flex-direction:column; gap:4px;
+  }
+  .role ul.dets li{
+    position:relative;
+    padding-left:14px;
+    font-size:12.5px; line-height:1.5; color:var(--ink-soft);
+  }
+  .role ul.dets li::before{
+    content:""; position:absolute; left:0; top:.62em;
+    width:5px; height:1px; background:var(--hair-strong);
+  }
+  .role .tag{
+    font-family:var(--mono); font-size:9.5px; color:var(--navy);
+    background:var(--navy-soft); padding:3px 7px; border-radius:999px;
+    letter-spacing:.10em; text-transform:uppercase;
+  }
+  .role.current .tag{ background:var(--navy); color:#fff; }
+
+  /* ---------- Skills ---------- */
+  .skillgroups{
+    margin-top:22px;
+    display:grid; grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:16px 36px; max-width:620px;
+  }
+  @media (min-height: 760px){ .skillgroups{ margin-top:30px; gap:22px 40px; } }
+  .sk h4{
+    margin:0 0 10px;
+    font-family:var(--mono); font-size:10px; color:var(--muted);
+    text-transform:uppercase; letter-spacing:.18em; font-weight:500;
+  }
+  .chips{ display:flex; flex-wrap:wrap; gap:6px 6px; }
+  .chip{
+    display:inline-flex; align-items:center;
+    padding:6px 11px; border:1px solid var(--hair); border-radius:999px;
+    font-size:12.5px; color:var(--ink); background:#fff;
+    transition:border-color .2s, color .2s, background .2s;
+  }
+  .chip.primary{ border-color:var(--navy); color:var(--navy); }
+  .chip:hover{ border-color:var(--ink); }
+
+  /* ---------- Certification / Education ---------- */
+  .certlist{
+    margin-top:22px;
+    display:flex; flex-direction:column; gap:10px; max-width:640px;
+  }
+  @media (min-height: 760px){ .certlist{ margin-top:30px; gap:14px; } }
+  .cert{
+    display:grid; grid-template-columns: 56px 1fr auto;
+    align-items:center; gap:18px;
+    padding:13px 16px 13px 12px;
+    border:1px solid var(--hair); border-radius:14px;
+    background:rgba(255,255,255,.7); backdrop-filter:saturate(1.1);
+  }
+  @media (min-height: 760px){ .cert{ padding:18px 18px 18px 14px; } }
+  .cert .ic{
+    width:42px; height:42px; border-radius:10px;
+    background:var(--navy-soft); color:var(--navy);
+    display:grid; place-items:center;
+    font-family:var(--mono); font-size:11px; letter-spacing:.06em;
+  }
+  .cert .t{ font-size:15px; font-weight:600; letter-spacing:-0.005em;}
+  .cert .t small{ display:block; font-weight:400; color:var(--ink-soft); font-size:12.5px; margin-top:2px;}
+  .cert .yr{ font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.14em;}
+
+  /* ---------- Active menu state hint on top nav ---------- */
+  .top nav button.navlink{
+    all:unset; cursor:pointer;
+    color:var(--ink-soft); font:500 13px var(--display);
+    padding:6px 0; position:relative;
+  }
+  .top nav button.navlink:hover{ color:var(--ink); }
+  .top nav button.navlink.active{ color:var(--ink); }
+  .top nav button.navlink.active::after{
+    content:""; position:absolute; left:0; right:0; bottom:-2px; height:1px; background:var(--navy);
+  }
+
+  /* scroll-cue arrow */
+  .scrollcue{
+    position:absolute; left:50%; bottom:14px;
+    transform:translateX(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    font-family:var(--mono); font-size:9px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--muted);
+    pointer-events:none;
+    opacity:0; transition:opacity .25s ease;
+  }
+  .scrollcue.show{ opacity:1; }
+  .scrollcue .chev{
+    width:14px; height:14px; position:relative;
+    animation:bob 1.6s ease-in-out infinite;
+  }
+  .scrollcue .chev::before, .scrollcue .chev::after{
+    content:""; position:absolute; left:50%; top:35%;
+    width:8px; height:1px; background:currentColor;
+  }
+  .scrollcue .chev::before{ transform:translateX(-100%) rotate(45deg); transform-origin:right center; }
+  .scrollcue .chev::after{  transform:translateX(0)     rotate(-45deg); transform-origin:left center; }
+  @keyframes bob{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(4px)} }
+  /* fade-in on first paint */
+  body{ opacity:0; transition:opacity 1s ease }
+  body.ready{ opacity:1 }
+
+
+  /* ---------- First-load cinematic intro ----------
+     Two gates run independently:
+       .chrome-hidden  — hides veil/brand/footer/home panel until 5s
+       .intro-pending  — keeps home video at left until 7s
+  */
+  body.chrome-hidden .veil,
+  body.chrome-hidden .brandmark,
+  body.chrome-hidden footer.bot,
+  body.chrome-hidden .scene[data-scene="home"]{
+    opacity:0 !important;
+    pointer-events:none !important;
+  }
+  body.chrome-hidden .scene[data-scene="home"]{
+    transform:none;
+  }
+
+  /* When chrome-hidden lifts, run the staggered reveal */
+  body:not(.chrome-hidden) .veil{
+    animation: chromeFade 600ms ease both;
+  }
+  body:not(.chrome-hidden).first-reveal .brandmark{
+    animation: chromeRise 600ms cubic-bezier(.2,.7,.2,1) both;
+    animation-delay: 80ms;
+  }
+  body:not(.chrome-hidden).first-reveal footer.bot{
+    animation: chromeRise 600ms cubic-bezier(.2,.7,.2,1) both;
+    animation-delay: 160ms;
+  }
+  body:not(.chrome-hidden).first-reveal .scene[data-scene="home"] .eyebrow{
+    animation: chromeRise 600ms cubic-bezier(.2,.7,.2,1) both;
+    animation-delay: 200ms;
+  }
+  body:not(.chrome-hidden).first-reveal .scene[data-scene="home"] .menu button{
+    animation: chromeRise 550ms cubic-bezier(.2,.7,.2,1) both;
+  }
+  body:not(.chrome-hidden).first-reveal .scene[data-scene="home"] .menu button:nth-child(1){ animation-delay: 320ms; }
+  body:not(.chrome-hidden).first-reveal .scene[data-scene="home"] .menu button:nth-child(2){ animation-delay: 400ms; }
+  body:not(.chrome-hidden).first-reveal .scene[data-scene="home"] .menu button:nth-child(3){ animation-delay: 480ms; }
+  body:not(.chrome-hidden).first-reveal .scene[data-scene="home"] .menu button:nth-child(4){ animation-delay: 560ms; }
+
+  @keyframes chromeFade{
+    from{ opacity:0 }
+    to  { opacity:1 }
+  }
+  @keyframes chromeRise{
+    from{ opacity:0; transform:translateY(10px) }
+    to  { opacity:1; transform:none }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="frame" data-screen-label="Portfolio">
+
+    <!-- BACKGROUNDS -->
+    <div class="bg-layer">
+      <div class="bg-stack" data-bg="home">
+        <video class="vid intro" data-phase="intro" muted playsinline preload="auto" src="intro/main%20page.mp4"></video>
+        <video class="vid loop"  data-phase="loop"  muted playsinline preload="auto" loop src="loop/main%20page.mp4"></video>
+      </div>
+      <div class="bg-stack" data-bg="about">
+        <video class="vid intro" data-phase="intro" muted playsinline preload="auto" src="intro/about%20me.mp4"></video>
+        <video class="vid loop"  data-phase="loop"  muted playsinline preload="auto" loop src="loop/about%20me.mp4"></video>
+      </div>
+      <div class="bg-stack" data-bg="work">
+        <video class="vid intro" data-phase="intro" muted playsinline preload="auto" src="intro/work%20experience.mp4"></video>
+        <video class="vid loop"  data-phase="loop"  muted playsinline preload="auto" loop src="loop/work%20experience.mp4"></video>
+      </div>
+      <div class="bg-stack" data-bg="skills">
+        <video class="vid intro" data-phase="intro" muted playsinline preload="auto" src="intro/skills.mp4"></video>
+        <video class="vid loop"  data-phase="loop"  muted playsinline preload="auto" loop src="loop/skills.mp4"></video>
+      </div>
+      <div class="bg-stack" data-bg="certs">
+        <video class="vid intro" data-phase="intro" muted playsinline preload="auto" src="intro/certification.mp4"></video>
+        <video class="vid loop"  data-phase="loop"  muted playsinline preload="auto" loop src="loop/certification.mp4"></video>
+      </div>
+      <div class="veil"></div>
+    </div>
+
+    <!-- BRAND MARK (left only — does not cross into right side) -->
+    <div class="brandmark">
+      <div class="mark">RM</div>
+      <div class="name">Russell&nbsp;Martinez<small>Full‑stack Developer</small></div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="stagecontent">
+      <div class="panel">
+
+        <!-- HOME — menu only -->
+        <section class="scene active" data-scene="home">
+          <div class="eyebrow"><span class="num">00</span><span class="bar"></span><span>Menu</span></div>
+          <div class="menu" id="homeMenu">
+            <button data-go="about"><span class="idx">01</span><span>About me</span><span class="arr">→</span></button>
+            <button data-go="work"><span class="idx">02</span><span>Work experience</span><span class="arr">→</span></button>
+            <button data-go="skills"><span class="idx">03</span><span>Skills</span><span class="arr">→</span></button>
+            <button data-go="certs"><span class="idx">04</span><span>Education &amp; certification</span><span class="arr">→</span></button>
+          </div>
+        </section>
+
+        <!-- ABOUT -->
+        <section class="scene" data-scene="about">
+          <button class="back" data-go="home"><span class="chev"></span>Back to menu</button>
+          <div class="eyebrow" style="margin-top:22px"><span class="num">01</span><span class="bar"></span><span>About me</span></div>
+          <h2 class="sectionhead">A developer who likes <em>quiet, fast software.</em></h2>
+          <div class="scroll">
+            <p class="lede">Four years in, I work the full stack — TypeScript on both ends, Postgres and BigQuery for data, GCP for the boring infrastructure parts. I care about load times, clean APIs, and code other people can read on a Monday morning.</p>
+            <div class="factgrid">
+              <div class="fact"><div class="k">Based in</div><div class="v">Quezon City, PH</div></div>
+              <div class="fact"><div class="k">Currently</div><div class="v">State and Liberty</div></div>
+              <div class="fact"><div class="k">Years building</div><div class="v">4+ years</div></div>
+              <div class="fact"><div class="k">Email</div><div class="v">russell.martinez.dev@gmail.com</div></div>
+              <div class="fact"><div class="k">LinkedIn</div><div class="v">/in/russmartidev</div></div>
+              <div class="fact"><div class="k">Mobile</div><div class="v">+63 927 854 6615</div></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- WORK -->
+        <section class="scene" data-scene="work">
+          <button class="back" data-go="home"><span class="chev"></span>Back to menu</button>
+          <div class="eyebrow" style="margin-top:22px"><span class="num">02</span><span class="bar"></span><span>Work experience</span></div>
+          <h2 class="sectionhead">Four roles, <em>one stack mindset.</em></h2>
+          <div class="scroll" id="workScroll">
+          <div class="timeline">
+            <div class="role current">
+              <div class="yr">2024 — Now</div>
+              <div class="body">
+                <div class="head">
+                  <span class="who">State and Liberty</span>
+                  <span class="role-title">· Full‑stack Developer</span>
+                  <span class="tag">Current</span>
+                </div>
+                <div class="stack">
+                  <span>Retool</span><span>Node.js</span><span>React</span><span>GCP</span><span>BigQuery</span><span>PostgreSQL</span><span>Selenium</span>
+                </div>
+                <ul class="dets">
+                  <li>Built internal web apps in Retool to streamline business operations.</li>
+                  <li>Automated tasks and data updates with Workflows, cutting manual work.</li>
+                  <li>Optimized queries and pages — load time from 1 min down to 5 s.</li>
+                  <li>Designed automated HTML / CSS email templates.</li>
+                  <li>Built Node + Express APIs and deployed on Google Cloud Platform.</li>
+                  <li>Shipped Selenium automations on Cloud Run Functions.</li>
+                  <li>Wrote custom React components for tailored UI functionality.</li>
+                  <li>Built internal mobile apps; integrated Cloud Storage for files.</li>
+                  <li>Reviewed code and mentored teammates through complex problems.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="role">
+              <div class="yr">2023 — 2024</div>
+              <div class="body">
+                <div class="head">
+                  <span class="who">Freelance</span>
+                  <span class="role-title">· Developer</span>
+                  <span class="tag">Contract</span>
+                </div>
+                <div class="stack">
+                  <span>Astro</span><span>TypeScript</span><span>Next.js</span><span>Remotion</span><span>MySQL</span><span>Figma</span>
+                </div>
+                <ul class="dets">
+                  <li>Built a serverless Astro + TS app generating crypto chart videos with Remotion.</li>
+                  <li>Shipped a Next.js app integrating multiple APIs for lead capture into MySQL.</li>
+                  <li>Designed UI / UX in Figma — intuitive, visually appealing layouts.</li>
+                  <li>Automated business tasks with Google Apps Script.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="role">
+              <div class="yr">2022 — 2023</div>
+              <div class="body">
+                <div class="head">
+                  <span class="who">Volatility Box</span>
+                  <span class="role-title">· Full‑stack Developer</span>
+                  <span class="tag">FT</span>
+                </div>
+                <div class="stack">
+                  <span>WordPress</span><span>Tailwind</span><span>Express.js</span><span>Socket.IO</span><span>Linux</span>
+                </div>
+                <ul class="dets">
+                  <li>Front‑end with WordPress, HTML, CSS and Tailwind.</li>
+                  <li>Back‑end services in Express.js — robust, scalable application logic.</li>
+                  <li>Real‑time customer dashboard updates via Socket.IO.</li>
+                  <li>Deployed front‑ and back‑end to Linux servers for production.</li>
+                  <li>Designed an algorithm to surface potentially profitable trades.</li>
+                  <li>Performance optimization, system testing and code review.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="role">
+              <div class="yr">2022 — 2023</div>
+              <div class="body">
+                <div class="head">
+                  <span class="who">Cropital</span>
+                  <span class="role-title">· Full‑stack Developer</span>
+                  <span class="tag">FT</span>
+                </div>
+                <div class="stack">
+                  <span>Sails.js</span><span>Vue.js</span><span>Python</span><span>Django</span><span>AWS</span><span>DigitalOcean</span><span>WordPress</span>
+                </div>
+                <ul class="dets">
+                  <li>Maintained and shipped new features on a Sails.js + Vue crowdfunding platform.</li>
+                  <li>Enhanced an internal Python / Django application.</li>
+                  <li>Deployed apps on Linux via AWS and DigitalOcean for scalable hosting.</li>
+                  <li>Built new features for a WordPress e‑commerce site.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          </div>
+          <div class="scrollcue" id="workCue"><span>Scroll</span><span class="chev"></span></div>
+        </section>
+
+        <!-- SKILLS -->
+        <section class="scene" data-scene="skills">
+          <button class="back" data-go="home"><span class="chev"></span>Back to menu</button>
+          <div class="eyebrow" style="margin-top:22px"><span class="num">03</span><span class="bar"></span><span>Skills &amp; toolkit</span></div>
+          <h2 class="sectionhead">The kit I <em>actually reach for.</em></h2>
+          <div class="scroll">
+          <div class="skillgroups">
+            <div class="sk">
+              <h4>Languages</h4>
+              <div class="chips">
+                <span class="chip primary">JavaScript</span><span class="chip primary">TypeScript</span>
+                <span class="chip">PHP</span><span class="chip">Python</span>
+              </div>
+            </div>
+            <div class="sk">
+              <h4>Frameworks</h4>
+              <div class="chips">
+                <span class="chip primary">React</span><span class="chip primary">Next.js</span>
+                <span class="chip">Node / Express</span><span class="chip">Sails.js</span>
+                <span class="chip">CodeIgniter</span><span class="chip">WordPress</span>
+                <span class="chip">Retool</span>
+              </div>
+            </div>
+            <div class="sk">
+              <h4>Data</h4>
+              <div class="chips">
+                <span class="chip">PostgreSQL</span><span class="chip">MySQL</span><span class="chip">BigQuery</span>
+              </div>
+            </div>
+            <div class="sk">
+              <h4>Cloud &amp; ops</h4>
+              <div class="chips">
+                <span class="chip primary">GCP</span><span class="chip">AWS</span>
+                <span class="chip">DigitalOcean</span><span class="chip">Vercel</span>
+                <span class="chip">Selenium</span><span class="chip">Apps Script</span>
+              </div>
+            </div>
+            <div class="sk">
+              <h4>Styling</h4>
+              <div class="chips">
+                <span class="chip">HTML</span><span class="chip">CSS / LESS</span>
+                <span class="chip">Tailwind</span><span class="chip">Bootstrap</span>
+              </div>
+            </div>
+            <div class="sk">
+              <h4>Design</h4>
+              <div class="chips">
+                <span class="chip">Figma</span><span class="chip">Adobe XD</span>
+                <span class="chip">Illustrator</span><span class="chip">Photoshop</span>
+                <span class="chip">Premiere Pro</span>
+              </div>
+            </div>
+          </div>
+          </div>
+        </section>
+
+        <!-- CERTS -->
+        <section class="scene" data-scene="certs">
+          <button class="back" data-go="home"><span class="chev"></span>Back to menu</button>
+          <div class="eyebrow" style="margin-top:22px"><span class="num">04</span><span class="bar"></span><span>Education &amp; certification</span></div>
+          <h2 class="sectionhead">Foundations &amp; <em>credentials.</em></h2>
+          <div class="scroll">
+          <div class="certlist">
+            <div class="cert">
+              <div class="ic">B.S.</div>
+              <div class="t">BS Information Technology<small>Quezon City University</small></div>
+              <div class="yr">2018 — 2022</div>
+            </div>
+            <div class="cert">
+              <div class="ic">GCP</div>
+              <div class="t">Google Cloud Platform — Practitioner<small>Cloud Run, Cloud Functions, Cloud Storage, BigQuery</small></div>
+              <div class="yr">In progress</div>
+            </div>
+            <div class="cert">
+              <div class="ic">JS</div>
+              <div class="t">Modern JavaScript &amp; TypeScript<small>Self‑directed coursework · 2021 — present</small></div>
+              <div class="yr">Ongoing</div>
+            </div>
+          </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bot">
+      <div class="crumb">
+        <span class="pip"></span>
+        <span id="crumbLabel">Welcome</span>
+      </div>
+      <div class="pager">
+        <b id="pageNum">01</b> &nbsp;/&nbsp; 04
+      </div>
+    </footer>
+
+  </div>
+</div>
+
+<script>
+  (function(){
+    const SCENES = {
+      home:   {label:"Welcome",            page:"00"},
+      about:  {label:"About me",           page:"01"},
+      work:   {label:"Work experience",    page:"02"},
+      skills: {label:"Skills",             page:"03"},
+      certs:  {label:"Education",          page:"04"},
+    };
+    const FADE_MS = 200;
+    const scenes = document.querySelectorAll('.scene');
+    const crumb = document.getElementById('crumbLabel');
+    const pageNum = document.getElementById('pageNum');
+
+    // ---------- Video controller ----------
+    const videoController = (function(){
+      const stacks = {};
+      document.querySelectorAll('.bg-stack').forEach(stack => {
+        const key = stack.dataset.bg;
+        const intro = stack.querySelector('.vid.intro');
+        const loop  = stack.querySelector('.vid.loop');
+        stacks[key] = { stack, intro, loop };
+
+        // intro -> loop (no fade): swap visibility instantly on intro end
+        intro.addEventListener('ended', () => {
+          if (current.key !== key) return;
+          loop.currentTime = 0;
+          loop.classList.add('visible');
+          intro.classList.remove('visible');
+          loop.play().catch(()=>{});
+          current.phase = 'loop';
+        });
+      });
+
+      let current = { key: null, phase: null };
+      let transitioning = false;
+
+      function pauseStack(s){
+        try { s.intro.pause(); } catch(_) {}
+        try { s.loop.pause();  } catch(_) {}
+      }
+
+      function transitionTo(key, opts){
+        opts = opts || {};
+        const fromBack = !!opts.fromBack;
+        if (!stacks[key]) return;
+        if (transitioning) return;
+        if (current.key === key) return;
+
+        const target = stacks[key];
+
+        // Pre-arm target stack
+        if (fromBack){
+          // skip intro — go straight to loop
+          target.intro.classList.remove('visible');
+          target.loop.classList.add('visible');
+          target.loop.currentTime = target.loop.currentTime || 0;
+          target.loop.play().catch(()=>{});
+        } else {
+          // play intro from t=0
+          target.loop.classList.remove('visible');
+          target.intro.classList.add('visible');
+          target.intro.currentTime = 0;
+          target.intro.play().catch(()=>{});
+        }
+
+        // First load: no outgoing stack — just activate target
+        if (!current.key){
+          target.stack.classList.add('active');
+          current = { key, phase: fromBack ? 'loop' : 'intro' };
+          return;
+        }
+
+        // Crossfade
+        transitioning = true;
+        const prev = stacks[current.key];
+        target.stack.classList.add('active');
+        prev.stack.classList.remove('active');
+
+        const prevKey = current.key;
+        current = { key, phase: fromBack ? 'loop' : 'intro' };
+
+        setTimeout(() => {
+          if (stacks[prevKey]) pauseStack(stacks[prevKey]);
+          transitioning = false;
+        }, FADE_MS + 20);
+      }
+
+      return { transitionTo };
+    })();
+
+    function go(key, opts){
+      if(!SCENES[key]) return;
+      scenes.forEach(s => s.classList.toggle('active', s.dataset.scene === key));
+      crumb.textContent = SCENES[key].label;
+      pageNum.textContent = SCENES[key].page;
+      videoController.transitionTo(key, opts);
+    }
+
+    document.querySelectorAll('[data-go]').forEach(el => {
+      el.addEventListener('click', () => {
+        const k = el.dataset.go;
+        // Going home from any inner scene = "back to menu" — skip home intro
+        const fromBack = (k === 'home');
+        go(k, { fromBack });
+      });
+    });
+
+    // keyboard: 1-4 jumps to sections, esc/0 -> home (back to menu, skip intro)
+    const keys = {'1':'about','2':'work','3':'skills','4':'certs','0':'home'};
+    window.addEventListener('keydown', e => {
+      // Block input until the menu is revealed
+      if (document.body.classList.contains('chrome-hidden')) return;
+      if (keys[e.key]){
+        const k = keys[e.key];
+        go(k, { fromBack: k === 'home' });
+      }
+      if (e.key === 'Escape') go('home', { fromBack: true });
+    });
+
+    // initial — first load plays home intro with cinematic reveal:
+    //   T=0s  intro starts; chrome hidden; video anchored left
+    //   T=5s  chrome (menu/veil/brand/footer) staggers in
+    //   T=7s  video slides left → right
+    document.body.classList.add('chrome-hidden');
+    document.body.classList.add('intro-pending');
+    requestAnimationFrame(()=> {
+      go('home');
+      document.body.classList.add('ready');
+    });
+    setTimeout(() => {
+      document.body.classList.add('first-reveal');
+      document.body.classList.remove('chrome-hidden');
+      // Drop the .first-reveal hook after the stagger finishes so it
+      // never replays on subsequent home returns.
+      setTimeout(() => document.body.classList.remove('first-reveal'), 1600);
+    }, 5000);
+    setTimeout(() => {
+      document.body.classList.remove('intro-pending');
+    }, 4000);
+
+    // scroll-cue arrow on Work Experience
+    const ws = document.getElementById('workScroll');
+    const wc = document.getElementById('workCue');
+    function updateCue(){
+      if(!ws || !wc) return;
+      const more = ws.scrollHeight - ws.clientHeight - ws.scrollTop > 12;
+      wc.classList.toggle('show', more);
+    }
+    if(ws){
+      ws.addEventListener('scroll', updateCue, {passive:true});
+      window.addEventListener('resize', updateCue);
+      const workScene = document.querySelector('.scene[data-scene="work"]');
+      const obs = new MutationObserver(()=> {
+        if(workScene.classList.contains('active')) requestAnimationFrame(updateCue);
+        else wc.classList.remove('show');
+      });
+      obs.observe(workScene, {attributes:true, attributeFilter:['class']});
+      requestAnimationFrame(updateCue);
+    }
+  })();
+</script>
+</body>
+</html>
