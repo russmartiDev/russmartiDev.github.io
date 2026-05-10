@@ -301,6 +301,30 @@
   }
   .fact-link:hover{ color:var(--navy); border-bottom-color:var(--navy); }
 
+  /* CTA button (download résumé etc.) */
+  .cta{
+    margin-top:28px;
+    display:inline-flex; align-items:center; gap:12px;
+    padding:12px 18px;
+    background:var(--navy); color:#fff;
+    border-radius:999px;
+    font-family:var(--display); font-size:14px; font-weight:500; letter-spacing:-0.005em;
+    text-decoration:none;
+    transition:background .2s, transform .2s, box-shadow .2s;
+    align-self:flex-start;
+  }
+  .cta:hover{
+    background:oklch(0.30 0.085 263);
+    transform:translateY(-1px);
+    box-shadow:0 6px 16px -8px oklch(0.36 0.090 263 / .55);
+  }
+  .cta .cta-arrow{
+    font-family:var(--mono); font-size:13px;
+    transition:transform .25s ease;
+  }
+  .cta:hover .cta-arrow{ transform:translateY(2px); }
+  @media (min-height: 760px){ .cta{ margin-top:36px; padding:14px 22px; font-size:15px; } }
+
   /* ---------- Work timeline ---------- */
   .timeline{
     margin-top:18px;
@@ -847,6 +871,10 @@
               <div class="fact"><div class="k">LinkedIn</div><div class="v"><a href="https://www.linkedin.com/in/russmartidev" target="_blank" rel="noopener noreferrer" class="fact-link">/in/russmartidev</a></div></div>
               <div class="fact"><div class="k">Mobile</div><div class="v">+63 927 854 6615</div></div>
             </div>
+            <a class="cta" href="Martinez%20Russell%20Resume.pdf" target="_blank" rel="noopener noreferrer">
+              <span class="cta-label">View résumé</span>
+              <span class="cta-arrow" aria-hidden="true">↗</span>
+            </a>
           </div>
         </section>
 
